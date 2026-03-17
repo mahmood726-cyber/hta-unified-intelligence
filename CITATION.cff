@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Hassan"
+  given-names: "Mahmood Ul"
+title: "HTA Unified Intelligence System"
+version: 1.0.0
+date-released: 2026-02-16
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Hassan"
+    given-names: "Mahmood Ul"
+  title: "The HTA Unified Intelligence System: A Self-Correcting Framework for Evidence Synthesis using Triple-Guard Ensembles"
+  journal: "Nature Medicine (Submission)"
+  year: 2026

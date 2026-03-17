@@ -1,0 +1,38 @@
+name: HTA Intelligence Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  schedule:
+    - cron: '0 0 * * 1' # Run weekly
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: rocker/tidyverse:4.2.0
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install System Deps
+        run: apt-get update && apt-get install -y python3 python3-pip
+
+      - name: Install R Deps
+        run: Rscript setup.R
+
+      - name: Install Python Deps
+        run: pip3 install -r requirements.txt
+
+      - name: Run Pipeline
+        run: Rscript master_integration_pipeline.R && Rscript run_tgep_integration.R && Rscript master_integration_pipeline.R
+
+      - name: Update Dashboard
+        run: python3 update_dashboard.py
+
+      - name: Archive Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: hta-dashboard
+          path: |
+            Unified_HTA_Dashboard.html
+            output/

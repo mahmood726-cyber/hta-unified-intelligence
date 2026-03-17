@@ -1,0 +1,27 @@
+---
+title: "The HTA Unified Intelligence System: A Dynamic Living Audit"
+author: "Mahmood Ul Hassan"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(data.table)
+df <- fread("output/master_unified_intelligence.csv")
+total_n <- nrow(df)
+immutable_pct <- round(sum(df$hta_verdict == "IMMUTABLE TRUTH") / total_n * 100, 1)
+fragile_n <- sum(df$hta_verdict == "FRAGILE")
+avg_dci <- round(mean(df$dci_score), 1)
+```
+
+## Abstract
+We present the HTA Unified Intelligence System (UIS), currently auditing **`r total_n`** medical technologies. Our living audit reveals that only **`r immutable_pct`%** of technologies achieve the "Immutable Truth" status.
+
+## 1. Results
+Of the **`r total_n`** technologies audited, **`r fragile_n`** reside in the "Fragile" tier. The average Data Completeness Index (DCI) across the portfolio is **`r avg_dci`%**, indicating high reliance on evidence synthesis engines.
+
+## 2. Conclusion
+The UIS framework allows healthcare systems to move beyond static appraisal. As new data enters the ecosystem, these statistics update in real-time, providing a "Living" evidence synthesis platform.
+
+---
+**Data Source:** `output/master_unified_intelligence.csv`

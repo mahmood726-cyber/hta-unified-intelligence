@@ -1,0 +1,18 @@
+{
+    "title_audit": "HTA Unified Intelligence Command Center",
+    "disclaimer": "?? AI ETHICS DISCLAIMER: Automated Decision Support System. Scores and recommendations are derived from probabilistic models and should not replace human clinical judgement.",
+    "col_key": "Technology ID",
+    "col_dci": "Completeness",
+    "col_integrity": "Integrity (IF)",
+    "col_transport": "Transportability",
+    "col_value": "Net Benefit",
+    "col_uds": "UDS Score",
+    "col_guard": "Guard Rail",
+    "col_action": "Recommended Action",
+    "col_verdict": "Verdict",
+    "status_confirmed": "Confirmed",
+    "status_null": "Precise Null",
+    "status_inconc": "Inconclusive",
+    "status_error": "Data Error",
+    "act_reject": "Review for Rejection"
+}
