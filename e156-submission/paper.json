@@ -1,0 +1,96 @@
+{
+  "title": "HTA Unified Intelligence System: Self-Correcting Evidence Synthesis with Triple-Guard Ensemble Pooling",
+  "slug": "hta-unified-intelligence-system",
+  "author": "Mahmood Ahmad",
+  "date": "2026-03-26",
+  "body": "Can a unified framework synthesize multiple evidence dimensions into a single Health Technology Assessment decision score that accounts for methodological divergence across estimators? We analyzed 44 technologies from the Pairwise70 Cochrane dataset, computing log odds ratios and standardized mean differences from study-level data using five engines covering integrity, stability, transportability, value, and ensemble robustness. The system integrates these engines via weighted scoring into a Unified Decision Score enhanced by Triple-Guard Ensemble Pooling combining grey relational, Winsorized random-effects, and selection-weighted estimators with leave-one-out fragility detection. The mean OR-scale divergence across technologies was 39.9 percent with 95% CI 28 to 52, and the guard rail classified 75 percent as Fragile with mean score of 30.9. Sensitivity analysis across three default-assumption scenarios showed consistent classification for 86 percent of all evaluated technologies. Single-method meta-analysis substantially underestimates overall evidence fragility in HTA decision-making contexts. The limitation is that conservative defaults for missing pillar data may systematically bias composite scores downward.",
+  "word_count": 156,
+  "sentence_count": 7,
+  "sentences": [
+    {
+      "role": "Question",
+      "text": "Can a unified framework synthesize multiple evidence dimensions into a single Health Technology Assessment decision score that accounts for methodological divergence across estimators?"
+    },
+    {
+      "role": "Dataset",
+      "text": "We analyzed 44 technologies from the Pairwise70 Cochrane dataset, computing log odds ratios and standardized mean differences from study-level data using five engines covering integrity, stability, transportability, value, and ensemble robustness."
+    },
+    {
+      "role": "Method",
+      "text": "The system integrates these engines via weighted scoring into a Unified Decision Score enhanced by Triple-Guard Ensemble Pooling combining grey relational, Winsorized random-effects, and selection-weighted estimators with leave-one-out fragility detection."
+    },
+    {
+      "role": "Primary result",
+      "text": "The mean OR-scale divergence across technologies was 39.9 percent with 95% CI 28 to 52, and the guard rail classified 75 percent as Fragile with mean score of 30.9."
+    },
+    {
+      "role": "Robustness",
+      "text": "Sensitivity analysis across three default-assumption scenarios showed consistent classification for 86 percent of all evaluated technologies."
+    },
+    {
+      "role": "Interpretation",
+      "text": "Single-method meta-analysis substantially underestimates overall evidence fragility in HTA decision-making contexts."
+    },
+    {
+      "role": "Boundary",
+      "text": "The limitation is that conservative defaults for missing pillar data may systematically bias composite scores downward."
+    }
+  ],
+  "notes": {
+    "app": "HTA Unified Intelligence System v1.0",
+    "data": "44 technologies from Pairwise70 Cochrane dataset",
+    "code": "https://github.com/mahmood726-cyber/hta-unified-intelligence",
+    "doi": "",
+    "version": "1.0",
+    "date": "2026-03-26",
+    "validation": "DRAFT"
+  },
+  "type": "methods",
+  "primary_estimand": "Unified Decision Score (UDS, 0-100)",
+  "validation": {
+    "status": "pass",
+    "checks": [
+      {
+        "name": "single paragraph",
+        "ok": true,
+        "detail": "Body must not contain blank-line paragraph breaks."
+      },
+      {
+        "name": "sentence count",
+        "ok": true,
+        "detail": "Found 7 sentences."
+      },
+      {
+        "name": "word count",
+        "ok": true,
+        "detail": "Found 156 words."
+      },
+      {
+        "name": "no headings",
+        "ok": true,
+        "detail": "No markdown headings allowed in body."
+      },
+      {
+        "name": "no links",
+        "ok": true,
+        "detail": "No links or DOI links allowed in body."
+      },
+      {
+        "name": "result sentence has interval",
+        "ok": true,
+        "detail": "Sentence 4 should include a confidence interval."
+      },
+      {
+        "name": "result sentence has estimand",
+        "ok": true,
+        "detail": "Sentence 4 should name an effect measure or test metric."
+      },
+      {
+        "name": "boundary sentence present",
+        "ok": true,
+        "detail": "Sentence 7 should express a limitation, harm, or scope boundary."
+      }
+    ]
+  },
+  "schema": "e156-v0.2"
+}
