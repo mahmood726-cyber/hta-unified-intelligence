@@ -17,4 +17,75 @@
             else { row.child(format(tr)).show(); tr.addClass('shown'); $(this).text('-'); }
         });
     });
-    </script><div style="margin-top: 50px; border-top: 1px solid #334155; padding-top: 20px; color: #64748b; font-size: 0.8em; text-align: center;">AI ETHICS DISCLAIMER: Automated Decision Support System.</div></body>
+    </script><div style="margin-top: 50px; border-top: 1px solid #334155; padding-top: 20px; color: #64748b; font-size: 0.8em; text-align: center;">AI ETHICS DISCLAIMER: Automated Decision Support System.</div><script>
+window.__webrValidationConfig = {
+    appName: 'HTA Unified Intelligence System',
+    intro: 'Checks ticker-to-table consistency, score ordering, and verdict text consistency in the integrated dashboard.',
+    tests: [
+        {
+            name: 'Ticker entries match the first five table rows',
+            collect() {
+                const marqueeText = document.querySelector('#news-ticker marquee')?.textContent ?? '';
+                const insightsText = marqueeText.includes('LATEST INSIGHTS:')
+                    ? marqueeText.split('LATEST INSIGHTS:')[1]
+                    : marqueeText;
+                const tickerPairs = Array.from(insightsText.matchAll(/([A-Za-z0-9_]+):\s+([A-Z]+)/g)).map((match) => `${match[1]}:${match[2]}`);
+                const rowPairs = Array.from(document.querySelectorAll('tr.hover-row')).slice(0, 5).map((row) => {
+                    const cells = row.querySelectorAll('td');
+                    return `${cells[1].textContent.trim()}:${cells[9].textContent.trim()}`;
+                });
+                return { tickerPairs, rowPairs };
+            },
+            r(payload, h) {
+                return `
+ticker <- ${h.rVector(payload.tickerPairs)}
+rows <- ${h.rVector(payload.rowPairs)}
+if (length(ticker) >= 5 && all(ticker[1:5] == rows)) {
+  "PASS|The ticker highlights the same first five rows shown in the table."
+} else {
+  paste0("FAIL|Ticker pairs ", paste(ticker[1:min(length(ticker), 5)], collapse = ", "), " do not match the first five table rows ", paste(rows, collapse = ", "), ".")
+}`.trim();
+            }
+        },
+        {
+            name: 'Unified Decision Scores stay sorted in descending order',
+            collect() {
+                const scores = Array.from(document.querySelectorAll('tr.hover-row')).map((row) => {
+                    const cells = row.querySelectorAll('td');
+                    return Number(cells[6].textContent.trim());
+                });
+                return { scores };
+            },
+            r(payload) {
+                return `
+scores <- c(${payload.scores.join(', ')})
+if (all(diff(scores) <= 1e-8)) {
+  "PASS|Rows remain ordered by descending Unified Decision Score."
+} else {
+  "FAIL|Unified Decision Scores are no longer sorted from highest to lowest."
+}`.trim();
+            }
+        },
+        {
+            name: 'Each row brief repeats the displayed verdict label',
+            collect() {
+                const checks = Array.from(document.querySelectorAll('tr.hover-row')).map((row) => {
+                    const verdict = row.querySelector('.badge')?.textContent?.trim() ?? '';
+                    const brief = row.getAttribute('data-brief') ?? '';
+                    return brief.includes(verdict);
+                });
+                return { checks };
+            },
+            r(payload, h) {
+                return `
+checks <- ${h.rVector(payload.checks)}
+if (all(checks)) {
+  "PASS|Every row brief repeats the verdict shown in the badge column."
+} else {
+  paste0("FAIL|", sum(!checks), " row briefs no longer match their displayed verdict badge.")
+}`.trim();
+            }
+        }
+    ]
+};
+</script><script src="../_shared/webr-validation.js"></script></body>
