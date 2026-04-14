@@ -1,10 +1,10 @@
 # The HTA Unified Intelligence System: A Self-Correcting Framework for Evidence Synthesis using Triple-Guard Ensemble Pooling
 
-**Authors:** Mahmood Ul Hassan [ORCID_PLACEHOLDER]
+**Authors:** Mahmood Ul Hassan [0009-0003-7781-4478]
 
 **Affiliation:** Independent Researcher, United Kingdom
 
-**Corresponding Author:** Mahmood Ul Hassan ([CORRESPONDING_EMAIL_PLACEHOLDER])
+**Corresponding Author:** Mahmood Ul Hassan ([CORRESPONDING_mahmood.ahmad2@nhs.net])
 
 ---
 
