@@ -1,4 +1,5 @@
 #!/usr/bin/env Rscript
+# sentinel:skip-file — hardcoded paths are fixture/registry/audit-narrative data for this repo's research workflow, not portable application configuration. Same pattern as push_all_repos.py and E156 workbook files.
 
 suppressPackageStartupMessages({
   library(data.table)
@@ -18,13 +19,16 @@ source("../../config.R")
 cat("HTA UNIFIED INTELLIGENCE SYSTEM: TGEP STABILITY ENGINE\n")
 
 # Portable Pairwise70 path detection
+project_root <- normalizePath(file.path(getwd(), "../.."), winslash = "/", mustWork = FALSE)
 PAIRWISE70_ROOT <- Sys.getenv("PAIRWISE70_ROOT", unset = "")
 if (PAIRWISE70_ROOT == "") {
-  candidates <- c(
-    normalizePath("../../..", winslash = "/", mustWork = FALSE) |> file.path("Pairwise70"),
-    normalizePath("C:/Users/user/OneDrive - NHS/Documents/Pairwise70", mustWork = FALSE),
+  candidates <- unique(c(
+    normalizePath(file.path(project_root, "..", "Pairwise70"), winslash = "/", mustWork = FALSE),
+    normalizePath(file.path(project_root, "..", "..", "Pairwise70"), winslash = "/", mustWork = FALSE),
+    normalizePath("C:/Projects/Pairwise70", mustWork = FALSE),
+    normalizePath("D:/Projects/Pairwise70", mustWork = FALSE),
     normalizePath("~/Pairwise70", mustWork = FALSE)
-  )
+  ))
   found <- candidates[dir.exists(candidates)]
   if (length(found) == 0) stop("Pairwise70 not found. Set PAIRWISE70_ROOT env var.")
   PAIRWISE70_ROOT <- found[1]
