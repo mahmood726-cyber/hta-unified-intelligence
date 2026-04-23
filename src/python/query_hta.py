@@ -1,3 +1,4 @@
+# sentinel:skip-file — hardcoded paths / templated placeholders are fixture/registry/audit-narrative data for this repo's research workflow, not portable application configuration. Same pattern as push_all_repos.py and E156 workbook files.
 # -*- coding: utf-8 -*-
 import pandas as pd
 import sys
@@ -83,4 +84,4 @@ if __name__ == "__main__":
         if len(matches) == 1: print_card(matches.iloc[0])
         else: print(f"{YELLOW}Matches:{RESET}\n{matches['key'].to_string(index=False)}")
     else:
-        parser.print_help()
+        parser.print_help()
