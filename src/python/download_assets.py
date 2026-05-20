@@ -23,9 +23,11 @@ urls = {
 print(f"Downloading {len(urls)} assets to {ASSET_DIR}...")
 for name, url in urls.items():
     try:
-        response = requests.get(url)
+        response = requests.get(url, timeout=30)
         response.raise_for_status()
-        with open(os.path.join(ASSET_DIR, name), "wb") as f: f.write(response.content)
-        print(f"✅ {name}")
-    except Exception as e: print(f"❌ Failed {name}: {e}")
+        with open(os.path.join(ASSET_DIR, name), "wb") as f:
+            f.write(response.content)
+        print(f"OK   {name}")
+    except Exception as e:
+        print(f"FAIL {name}: {e}")
 print("Offline assets updated.")

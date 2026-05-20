@@ -66,13 +66,17 @@ def update_html(df):
     if not soup.body: soup.append(soup.new_tag('body'))
     if not soup.head: soup.insert(0, soup.new_tag('head'))
 
-    # Ticker
+    # Ticker (CSS-animated; <marquee> is deprecated)
     if soup.find('div', id='news-ticker'): soup.find('div', id='news-ticker').decompose()
     ticker = soup.new_tag('div', id='news-ticker', style="background:#0f172a; color:#38bdf8; padding:10px; font-family:monospace; border-bottom:1px solid #334155; white-space:nowrap; overflow:hidden;")
-    marquee = soup.new_tag('marquee', behavior="scroll", direction="left")
+    track = soup.new_tag('div', **{'class': 'ticker-track', 'style': 'display:inline-block; padding-left:100%; animation: ticker-scroll 40s linear infinite;'})
     ticker_text = "SYSTEM STATUS: ONLINE | LATEST INSIGHTS: "
     for _, row in df.head(5).iterrows(): ticker_text += f" - {row['key']}: {row['hta_verdict']} "
-    marquee.string = ticker_text; ticker.append(marquee)
+    track.string = ticker_text
+    ticker.append(track)
+    style_tag = soup.new_tag('style')
+    style_tag.string = "@keyframes ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }"
+    ticker.append(style_tag)
     soup.body.insert(0, ticker)
 
     # Assets
