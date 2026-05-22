@@ -29,6 +29,9 @@ jobs:
       - name: Run R logic tests
         run: Rscript tests/run_tests.R
 
+      - name: Run Python unit tests
+        run: pytest tests/test_python_units.py -v
+
       - name: Run Python contract tests
         run: pytest tests/test_verification_contract.py -v
 

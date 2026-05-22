@@ -80,8 +80,17 @@ Either entrypoint runs the same six stages:
 # R logic tests
 Rscript tests/run_tests.R
 
-# Python contract + manuscript-numbers tests
+# Python unit + contract tests
 pytest tests/
+```
+
+Or via the Makefile:
+
+```bash
+make install    # R + Python deps
+make test       # R logic + Python units
+make run        # full pipeline
+make docker     # build reproducibility container
 ```
 
 ## Project Structure

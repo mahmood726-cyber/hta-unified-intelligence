@@ -1,10 +1,9 @@
 import os
+import sys
+
 import requests
 
-ASSET_DIR = os.path.join("output", "assets")
-if not os.path.exists(ASSET_DIR): os.makedirs(ASSET_DIR)
-
-urls = {
+ASSET_URLS = {
     "jquery.min.js": "https://code.jquery.com/jquery-3.6.0.min.js",
     "jquery.dataTables.min.js": "https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js",
     "jquery.dataTables.min.css": "https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css",
@@ -17,17 +16,30 @@ urls = {
     "mermaid.min.js": "https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js",
     "chart.min.js": "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js",
     "dataTables.rowGroup.min.js": "https://cdn.datatables.net/rowgroup/1.1.4/js/dataTables.rowGroup.min.js",
-    "rowGroup.dataTables.min.css": "https://cdn.datatables.net/rowgroup/1.1.4/css/rowGroup.dataTables.min.css"
+    "rowGroup.dataTables.min.css": "https://cdn.datatables.net/rowgroup/1.1.4/css/rowGroup.dataTables.min.css",
 }
 
-print(f"Downloading {len(urls)} assets to {ASSET_DIR}...")
-for name, url in urls.items():
-    try:
-        response = requests.get(url, timeout=30)
-        response.raise_for_status()
-        with open(os.path.join(ASSET_DIR, name), "wb") as f:
-            f.write(response.content)
-        print(f"OK   {name}")
-    except Exception as e:
-        print(f"FAIL {name}: {e}")
-print("Offline assets updated.")
+
+def download(asset_dir=None, urls=None, timeout=30):
+    asset_dir = asset_dir or os.path.join("output", "assets")
+    urls = urls or ASSET_URLS
+    os.makedirs(asset_dir, exist_ok=True)
+
+    failures = []
+    print(f"Downloading {len(urls)} assets to {asset_dir}...")
+    for name, url in urls.items():
+        try:
+            response = requests.get(url, timeout=timeout)
+            response.raise_for_status()
+            with open(os.path.join(asset_dir, name), "wb") as f:
+                f.write(response.content)
+            print(f"OK   {name}")
+        except Exception as e:
+            failures.append(name)
+            print(f"FAIL {name}: {e}")
+    print("Offline assets updated.")
+    return failures
+
+
+if __name__ == "__main__":
+    sys.exit(1 if download() else 0)
