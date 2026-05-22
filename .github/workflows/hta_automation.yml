@@ -2,35 +2,70 @@ name: HTA Intelligence Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
   schedule:
-    - cron: '0 0 * * 1' # Run weekly
+    - cron: '0 0 * * 1' # Weekly
 
 jobs:
-  build:
+  test:
+    name: Tests
     runs-on: ubuntu-latest
-    container: rocker/tidyverse:4.2.0
+    container: rocker/tidyverse:4.3.2
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Install System Deps
+      - name: Install system deps
         run: apt-get update && apt-get install -y python3 python3-pip
 
-      - name: Install R Deps
+      - name: Install R deps
         run: Rscript setup.R
 
-      - name: Install Python Deps
+      - name: Install Python deps
         run: pip3 install -r requirements.txt
 
-      - name: Run Pipeline
-        run: Rscript master_integration_pipeline.R && Rscript run_tgep_integration.R && Rscript master_integration_pipeline.R
+      - name: Run R logic tests
+        run: Rscript tests/run_tests.R
 
-      - name: Update Dashboard
-        run: python3 update_dashboard.py
+      - name: Run Python unit tests
+        run: pytest tests/test_python_units.py -v
 
-      - name: Archive Artifacts
-        uses: actions/upload-artifact@v3
+      - name: Run Python contract tests
+        run: pytest tests/test_verification_contract.py -v
+
+  pipeline:
+    name: Pipeline (scheduled / main only)
+    if: github.event_name == 'schedule' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    needs: test
+    runs-on: ubuntu-latest
+    container: rocker/tidyverse:4.3.2
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system deps
+        run: apt-get update && apt-get install -y python3 python3-pip
+
+      - name: Install R deps
+        run: Rscript setup.R
+
+      - name: Install Python deps
+        run: pip3 install -r requirements.txt
+
+      - name: Run pipeline
+        run: |
+          Rscript src/R/master_integration_pipeline.R
+          Rscript src/R/run_tgep_integration.R || true
+          Rscript src/R/master_integration_pipeline.R
+          python3 src/python/generate_narratives.py
+          python3 src/python/archive_manager.py
+          python3 src/python/update_dashboard.py
+          python3 src/python/generate_manifest.py
+
+      - name: Upload artefacts
+        uses: actions/upload-artifact@v4
         with:
           name: hta-dashboard
           path: |

@@ -4,7 +4,7 @@
 
 This repository contains the source code and data for the HTA Unified Intelligence System, a next-generation framework for Health Technology Assessment. It integrates five methodology engines into a single **Unified Decision Score (UDS)** to evaluate medical technologies.
 
-## ?? System Architecture
+## System Architecture
 
 ```mermaid
 graph TD
@@ -12,63 +12,135 @@ graph TD
     A --> C(Meta-Ecosystem Model)
     A --> D(Transportability Engine)
     A --> E(Value Synthesizer)
-    
+
     B -- Bias/Power --> F{Master Integration}
     C -- Decay Score --> F
     D -- Leakage Penalty --> F
     E -- Net Benefit --> F
-    
+
     A --> G[Triple-Guard Ensemble TGEP]
     G -- Guard Rail Check --> F
-    
+
     F --> H[Unified Decision Score]
     H --> I{HTA Verdict}
     I --> J[Unified Dashboard]
-    
+
     style G fill:#f9f,stroke:#333,stroke-width:2px
     style H fill:#bbf,stroke:#333,stroke-width:4px
 ```
 
-## ?? Quick Start
+## Quick Start
 
 ### Prerequisites
-*   **R** (v4.0+)
-*   **Python** (v3.8+)
-*   **PowerShell** (Windows) or Bash (Linux/Mac)
+*   **R** v4.0+ (with `metafor`, `data.table`, `dplyr`, `ggplot2`, `jsonlite`, `testthat`)
+*   **Python** v3.8+
+*   **Bash** (Linux/macOS) or **PowerShell** (Windows)
 
 ### Installation
-1.  **Install R Dependencies:**
-    ```bash
-    Rscript setup.R
-    ```
-2.  **Install Python Dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
+
+Install R dependencies:
+```bash
+Rscript setup.R
+```
+
+Install Python dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+Or use Docker for a fully reproducible environment:
+```bash
+docker build -t hta-uis .
+docker run --rm -v "$PWD/output:/app/output" hta-uis
+```
 
 ### Usage
-Run the entire pipeline with a single command:
-```powershell
+
+Run the full pipeline:
+
+```bash
+# Linux / macOS
+./run_all_unified.sh
+
+# Windows
 .\run_all_unified.ps1
 ```
 
-## ?? Project Structure
+Either entrypoint runs the same six stages:
+1. QA tests (`tests/test_logic.R`)
+2. Initial integration (`src/R/master_integration_pipeline.R`)
+3. TGEP guard rail (`src/R/run_tgep_integration.R`)
+4. Final integration (re-runs `master_integration_pipeline.R` with TGEP results)
+5. Narrative generation + database archival (`src/python/`)
+6. Dashboard refresh + manifest (`src/python/`)
 
-*   `R/` - Core R libraries (TGEP engine).
-*   `output/` - Generated results (CSVs, Figures).
-*   `data/` - Input data (optional).
-*   `master_integration_pipeline.R` - Main logic for UDS calculation.
-*   `run_tgep_integration.R` - TGEP Guard Rail execution.
-*   `update_dashboard.py` - Python script for HTML dashboard generation.
-*   `HTA_Intelligence_Manuscript_Nature.md` - The draft manuscript.
+### Tests
 
-## ?? Key Metrics
+```bash
+# R logic tests
+Rscript tests/run_tests.R
 
-*   **Inf Frac:** Evidence Integrity score.
-*   **FPI Score:** Resilience to evidence decay.
-*   **Transportability:** Real-world efficacy retention.
-*   **Guard Rail:** TGEP status ("Confirmed", "Precise Null", "Inconclusive").
-*   **Action:** Recommended next step (e.g., "Request New RCT").
+# Python unit + contract tests
+pytest tests/
+```
+
+Or via the Makefile:
+
+```bash
+make install    # R + Python deps
+make test       # R logic + Python units
+make run        # full pipeline
+make docker     # build reproducibility container
+```
+
+## Project Structure
+
+*   `src/R/` — Core R pipeline (TGEP, master integration, sensitivity).
+*   `src/python/` — Dashboard, narratives, archive, manifest, CLI query tool.
+*   `R/` — Auxiliary R analyses (`meta_audit.R` — meta-analysis of pipeline output).
+*   `tests/` — R logic suite and Python verification contract.
+*   `config.R` — Centralised weights, thresholds, divergence parameters.
+*   `output/` — Generated CSVs, JSON, plots, archive, manifest (gitignored).
+*   `data/input/` — Drop user CSVs here for `src/R/ingest_external_data.R`.
+*   `Unified_HTA_Dashboard.html` — Static dashboard, updated in place by the pipeline.
+*   `HTA_Intelligence_Manuscript_Nature.md` — Draft manuscript.
+
+## Configuration
+
+All thresholds and weights live in `config.R` (`HTA_CONFIG`). Changes there propagate to every pipeline stage and are verified by `tests/test_logic.R`.
+
+| Setting | Default | Used by |
+|---|---|---|
+| `weights.integrity` | 0.30 | UDS calculation |
+| `weights.stability` | 0.25 | UDS calculation |
+| `weights.transport` | 0.25 | UDS calculation |
+| `weights.value`     | 0.20 | UDS calculation |
+| `thresholds.immutable` | 70 | Verdict classification |
+| `thresholds.conditional` | 40 | Verdict classification |
+| `thresholds.fragile` | 20 | Verdict classification |
+
+## Environment Variables
+
+| Variable | Purpose |
+|---|---|
+| `HTA_MODELS_DIR` | Parent directory containing sibling engine repos (Evidence Integrity Suite, Meta-Ecosystem Model, Transportability Engine, Value-Based HTA Engine). Defaults to the repo's grandparent. |
+| `PAIRWISE70_ROOT` | Location of the `Pairwise70` dataset (`.rda` files consumed by TGEP). Auto-detected from common locations if unset. |
+
+When sibling engine outputs are missing, the pipeline reports `MISSING (will use defaults)` and substitutes neutral defaults; verdicts are still produced.
+
+## Key Metrics
+
+*   **Inf Frac** — Evidence Integrity score (from Evidence Integrity Suite).
+*   **FPI Score** — Resilience to evidence decay.
+*   **Transportability** — Real-world efficacy retention.
+*   **Guard Rail** — TGEP status (`Confirmed`, `Precise Null`, `Inconclusive`).
+*   **UDS** — Unified Decision Score in [0, 100].
+*   **DCI** — Data Completeness Index (which engines contributed).
+*   **Action** — Recommended next step (e.g. `Request New RCT`).
+
+## Citation
+
+See `CITATION.cff` and `.zenodo.json`.
 
 ---
 *Generated by Mahmood Ul Hassan, Feb 2026.*
