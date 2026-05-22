@@ -41,6 +41,6 @@ fi
 
 echo ""
 echo "Pushed to GitHub. View at:"
-echo "  https://github.com/mahmood726-cyber/hta-unified-intelligence-system"
-echo "  https://mahmood726-cyber.github.io/hta-unified-intelligence-system/"
-echo "  https://mahmood726-cyber.github.io/hta-unified-intelligence-system/e156-submission/"
+echo "  https://github.com/mahmood726-cyber/hta-unified-intelligence"
+echo "  https://mahmood726-cyber.github.io/hta-unified-intelligence/"
+echo "  https://mahmood726-cyber.github.io/hta-unified-intelligence/e156-submission/"

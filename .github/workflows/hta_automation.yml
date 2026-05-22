@@ -31,8 +31,6 @@ jobs:
 
       - name: Run Python contract tests
         run: pytest tests/test_verification_contract.py -v
-        # Allow this to soft-fail when artefacts are absent on a fresh checkout
-        continue-on-error: true
 
   pipeline:
     name: Pipeline (scheduled / main only)
